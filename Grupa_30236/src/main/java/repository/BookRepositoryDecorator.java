@@ -1,6 +1,6 @@
 package repository;
-
-public abstract class BookRepositoryDecorator implements BookRepository{
+import model.*;
+public abstract class BookRepositoryDecorator<T extends Book> implements BookRepository<T>{
     protected BookRepository decoratedRepository;
 
     public BookRepositoryDecorator(BookRepository bookRepository){

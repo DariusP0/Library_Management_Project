@@ -42,6 +42,8 @@ public class JDBConnectionWrapper {
                 " author varchar(500) NOT NULL," +
                 " title varchar(500) NOT NULL," +
                 " publishedDate datetime DEFAULT NULL," +
+                " runtime varchar(500) DEFAULT NULL,"+
+                " format varchar(500) DEFAULT NULL,"+
                 " PRIMARY KEY(id)," +
                 " UNIQUE KEY id_UNIQUE(id)" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";

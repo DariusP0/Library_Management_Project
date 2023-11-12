@@ -1,32 +1,33 @@
 package service;
 
-import model.Book;
+
+import model.*;
 import repository.BookRepository;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class BookServiceImpl implements BookService{
+public class BookServiceImpl<T extends Book> implements BookService<T>{
 
-    final BookRepository bookRepository;
+    final BookRepository<T> bookRepository;
 
-    public BookServiceImpl(BookRepository bookRepository){
+    public BookServiceImpl(BookRepository<T> bookRepository) {
         this.bookRepository = bookRepository;
     }
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<T> findAll() {
+        return (List <T>) bookRepository.findAll();
     }
 
     @Override
-    public Book findById(Long id) {
-        return bookRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Book with id: %d not found".formatted(id)));
+    public T findById(Long id) {
+        return (T) bookRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Book with id: %d not found".formatted(id)));
     }
 
     @Override
-    public boolean save(Book book) {
+    public boolean save(T book) {
         return bookRepository.save(book);
     }
 

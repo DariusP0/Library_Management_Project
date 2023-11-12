@@ -6,28 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BookRepositoryMock implements BookRepository{
+public class BookRepositoryMock<T extends Book> implements BookRepository<T> {
 
-    private List<Book> books;
+    private List<T> books;
 
-    public BookRepositoryMock(){
+    public BookRepositoryMock() {
         books = new ArrayList<>();
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<T> findAll() {
         return books;
     }
 
     @Override
-    public Optional<Book> findById(Long id) {
+    public Optional<T> findById(Long id) {
         return books.parallelStream()
                 .filter(it -> it.getId().equals(id))
                 .findFirst();
     }
 
-    @Override
-    public boolean save(Book book) {
+    public boolean save(T book) {
         return books.add(book);
     }
 

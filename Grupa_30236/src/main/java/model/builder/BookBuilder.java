@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class BookBuilder {
 
-    private Book book;
+    protected Book book;
 
 
     public BookBuilder(){

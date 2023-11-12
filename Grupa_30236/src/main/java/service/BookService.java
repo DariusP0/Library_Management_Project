@@ -4,13 +4,13 @@ import model.Book;
 
 import java.util.List;
 
-public interface BookService {
+public interface BookService<T extends Book> {
 
-    List<Book> findAll();
+    List<T> findAll();
 
-    Book findById(Long id);
+    T findById(Long id);
 
-    boolean save(Book book);
+    boolean save(T book);
 
     int getAgeOfBook(Long id);
 }

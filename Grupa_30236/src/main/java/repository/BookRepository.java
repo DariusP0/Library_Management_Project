@@ -5,12 +5,12 @@ import model.Book;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookRepository {
-    List<Book> findAll();
+public interface BookRepository<T>{
+    List<T> findAll();
 
-    Optional<Book> findById(Long id);
+    Optional<T> findById(Long id);
 
-    boolean save(Book book);
+    boolean save(T book);
 
     void removeAll();
 

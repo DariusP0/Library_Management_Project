@@ -5,30 +5,29 @@ import model.Book;
 import java.util.List;
 import java.util.Optional;
 
-public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
-    private Cache<Book> cache;
+public class BookRepositoryCacheDecorator<T extends Book> extends BookRepositoryDecorator<T> {
+    private Cache<T> cache;
 
-    public BookRepositoryCacheDecorator(BookRepository bookRepository, Cache<Book> cache){
+    public BookRepositoryCacheDecorator(BookRepository<T> bookRepository, Cache<T> cache) {
         super(bookRepository);
         this.cache = cache;
     }
 
     @Override
-    public List<Book> findAll() {
-        if (cache.hasResult()){
+    public List<T> findAll() {
+        if (cache.hasResult()) {
             return cache.load();
         }
 
-        List<Book> books = decoratedRepository.findAll();
-        cache.save(books);
+        List<T> items = decoratedRepository.findAll();
+        cache.save(items);
 
-        return books;
+        return items;
     }
 
     @Override
-    public Optional<Book> findById(Long id) {
-
-        if (cache.hasResult()){
+    public Optional<T> findById(Long id) {
+        if (cache.hasResult()) {
             return cache.load()
                     .stream()
                     .filter(it -> it.getId().equals(id))
@@ -37,12 +36,12 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
 
         return decoratedRepository.findById(id);
     }
-
     @Override
-    public boolean save(Book book) {
+    public boolean save(T item) {
         cache.invalidateCache();
-        return decoratedRepository.save(book);
+        return decoratedRepository.save(item);
     }
+
 
     @Override
     public void removeAll() {
