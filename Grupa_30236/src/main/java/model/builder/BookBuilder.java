@@ -28,7 +28,14 @@ public class BookBuilder {
         book.setTitle(title);
         return this;
     }
-
+    public BookBuilder setPrice(int price){
+        book.setPrice(price);
+        return this;
+    }
+    public BookBuilder setQuantity(int quantity){
+        book.setQuantity(quantity);
+        return this;
+    }
     public BookBuilder setPublishedDate(LocalDate publishedDate){
         book.setPublishedDate(publishedDate);
         return this;
