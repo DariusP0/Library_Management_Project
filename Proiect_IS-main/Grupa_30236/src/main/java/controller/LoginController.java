@@ -58,6 +58,11 @@ public class LoginController {
                     AdminView adminView = new AdminView(user);
                     AdminController adminController = new AdminController(adminView, authenticationService,selected);
                 }
+                if(loginNotification.getResult().getRoles().get(0).getRole().equals("employee")){
+                    loginView.closeLoginView();
+                    EmployeeView employeeView = new EmployeeView(user);
+                    EmployeeController employeeController = new EmployeeController(employeeView,bookService);
+                }
 
 
             }

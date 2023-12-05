@@ -4,6 +4,7 @@ import model.Book;
 import model.builder.BookBuilder;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,8 +134,86 @@ public class BookRepositoryMySQL implements BookRepository{
             return false;
         }
     }
+    @Override
+    public boolean updateByAuthor(Long id, String author){
+        String updateSql = "UPDATE book SET author = ? WHERE id = ?";
 
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, author);
+            updateStatement.setLong(2, id);
 
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean updateByTitle(Long id, String title){
+        String updateSql = "UPDATE book SET title = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, title);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean updateByDate(Long id, LocalDate date){
+        String updateSql = "UPDATE book SET publishedDate = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setObject(1, date);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean updatePrice(Long id, Long price){
+        String updateSql = "UPDATE book SET price = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setLong(1, price);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean updateByQuantity(Long id, Long quantity){
+        String updateSql = "UPDATE book SET quantity = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setLong(1, quantity);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     @Override
     public void removeAll() {
         String sql = "DELETE FROM book WHERE id >= 0;";
@@ -146,6 +225,20 @@ public class BookRepositoryMySQL implements BookRepository{
             e.printStackTrace();
         }
     }
+    @Override
+    public void removeById(Long deleteId) {
+        String sql = "DELETE FROM book WHERE id = ?;";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, deleteId);
+            statement.executeUpdate(); // Use executeUpdate without passing the SQL query
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private Book getBookFromResultSet(ResultSet resultSet) throws SQLException {
         return new BookBuilder()

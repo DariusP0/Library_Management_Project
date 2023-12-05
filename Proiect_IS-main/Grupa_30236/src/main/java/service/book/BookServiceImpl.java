@@ -33,7 +33,31 @@ public class BookServiceImpl implements BookService{
     public boolean updateQuantity(String author, String title, int newQuantity){
         return bookRepository.updateQuantity(author, title, newQuantity);
     }
+    @Override
+    public void removeById(Long deleteId){
+        bookRepository.removeById(deleteId);
+    }
+    @Override
+    public boolean updateByAuthor(Long id, String author){
+        return bookRepository.updateByAuthor(id, author);
+    }
+    @Override
+    public boolean updateByTitle(Long id, String title){
+        return bookRepository.updateByTitle(id, title);
+    }
 
+    @Override
+    public boolean updateByDate(Long id, LocalDate publishedDate){
+        return bookRepository.updateByDate(id, publishedDate);
+    }
+    @Override
+    public boolean updatePrice(Long id, Long price){
+        return bookRepository.updatePrice(id, price);
+    }
+    @Override
+    public boolean updateByQuantity(Long id,Long quantity){
+        return bookRepository.updateByQuantity(id, quantity);
+    }
     @Override
     public int getAgeOfBook(Long id) {
         Book book = this.findById(id);
