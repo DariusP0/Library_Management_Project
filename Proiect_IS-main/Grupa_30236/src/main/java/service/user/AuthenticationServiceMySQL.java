@@ -11,6 +11,7 @@ import repository.user.UserRepository;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Collections;
+import java.util.List;
 
 import static database.Constants.Roles.CUSTOMER;
 
@@ -59,6 +60,27 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     @Override
     public boolean logout(User user) {
         return false;
+    }
+    @Override
+    public List<User> findAll(){
+        return userRepository.findAll();
+    }
+    @Override
+    public User findById(Long id){
+        return userRepository.findById(id);
+    }
+    @Override
+    public boolean removeById(Long id){
+        return userRepository.removeById(id);
+    }
+
+    @Override
+    public boolean updateEmployee(Long id, String username, String password) {
+        return userRepository.updateEmployee(id,username,hashPassword(password));
+    }
+    @Override
+    public boolean updateUserRole(Long id, Long role){
+        return userRepository.updateUserRole(id, role);
     }
 
     private String hashPassword(String password) {

@@ -9,9 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import static database.Constants.Tables.USER;
+import static database.Constants.Tables.USER_ROLE;
 import static java.util.Collections.singletonList;
 
 public class UserRepositoryMySQL implements UserRepository {
@@ -27,8 +29,78 @@ public class UserRepositoryMySQL implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return null;
+        List<User> userList = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+
+            String fetchAllUsersSql = "SELECT * FROM " + USER;
+            ResultSet usersResultSet = statement.executeQuery(fetchAllUsersSql);
+
+            while (usersResultSet.next()) {
+                User user = new UserBuilder()
+                        .setId(usersResultSet.getLong("id"))
+                        .setUsername(usersResultSet.getString("username"))
+                        .setPassword(usersResultSet.getString("password"))
+                        .setRoles(rightsRolesRepository.findRolesForUser(usersResultSet.getLong("id")))
+                        .build();
+
+                userList.add(user);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userList;
     }
+
+    @Override
+    public User findById(Long id) {
+        try {
+            Statement statement = connection.createStatement();
+
+            String fetchUserByIdSql = "SELECT * FROM " + USER + " WHERE id=" + id;
+            ResultSet userResultSet = statement.executeQuery(fetchUserByIdSql);
+
+            if (userResultSet.next()) {
+                User user = new UserBuilder()
+                        .setId(userResultSet.getLong("id"))
+                        .setUsername(userResultSet.getString("username"))
+                        .setPassword(userResultSet.getString("password"))
+                        .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
+                        .build();
+
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Return null if user with the specified ID is not found
+    }
+    @Override
+    public boolean removeById(Long id) {
+        try {
+            // Use a PreparedStatement for parameterized queries to avoid SQL injection
+            String deleteSql = "DELETE FROM " + USER + " WHERE id=?";
+            PreparedStatement deleteStatement = connection.prepareStatement(deleteSql);
+
+            // Set the user ID for the WHERE clause
+            deleteStatement.setLong(1, id);
+
+            // Execute the delete statement
+            int rowsAffected = deleteStatement.executeUpdate();
+
+            return (rowsAffected!=0);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
     // SQL Injection Attacks should not work after fixing functions
     // Be careful that the last character in sql injection payload is an empty space
@@ -99,6 +171,49 @@ public class UserRepositoryMySQL implements UserRepository {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    @Override
+    public boolean updateEmployee(Long id, String newUsername, String newPassword) {
+        try {
+            // Use a PreparedStatement for parameterized queries to avoid SQL injection
+            String updateSql = "UPDATE " + USER + " SET username=?, password=? WHERE id=?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+
+            // Set the new values for username and password
+            updateStatement.setString(1, newUsername);
+            updateStatement.setString(2, newPassword);
+            // Specify the user ID for the WHERE clause
+            updateStatement.setLong(3, id);
+
+            // Execute the update statement
+            int rowsAffected = updateStatement.executeUpdate();
+            return (rowsAffected != 1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public boolean updateUserRole(Long id, Long role){
+        try {
+            // Use a PreparedStatement for parameterized queries to avoid SQL injection
+            String updateSql = "UPDATE " + USER_ROLE + " SET role_id=? WHERE user_id=?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+
+            // Set the new values for username and password
+            updateStatement.setLong(1, role);
+            updateStatement.setLong(2, id);
+            // Specify the user ID for the WHERE clause
+
+            // Execute the update statement
+            int rowsAffected = updateStatement.executeUpdate();
+            return (rowsAffected != 1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

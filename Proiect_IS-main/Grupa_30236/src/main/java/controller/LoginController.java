@@ -9,9 +9,12 @@ import repository.book.BookRepositoryMySQL;
 import service.book.BookService;
 import service.book.BookService;
 import service.user.AuthenticationService;
+import view.AdminView;
 import view.CustomerView;
+import view.EmployeeView;
 import view.LoginView;
 
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
@@ -43,11 +46,19 @@ public class LoginController {
                 loginView.setActionTargetText(loginNotification.getFormattedErrors());
             } else {
                 loginView.setActionTargetText("LogIn Successfull!");
+                System.out.println(loginNotification.getResult().getRoles().get(0).getRole());
                 if (loginNotification.getResult().getRoles().get(0).getRole().equals("customer")) {
                     loginView.closeLoginView();
                     CustomerView customerView = new CustomerView(user);
                     CustomerController customerController = new CustomerController(customerView, bookService);
                 }
+                if(loginNotification.getResult().getRoles().get(0).getRole().equals("administrator")) {
+                    loginView.closeLoginView();
+                    List<User> selected = new ArrayList<>();
+                    AdminView adminView = new AdminView(user);
+                    AdminController adminController = new AdminController(adminView, authenticationService,selected);
+                }
+
 
             }
         }
