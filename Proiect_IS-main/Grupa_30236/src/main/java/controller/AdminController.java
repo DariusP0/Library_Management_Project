@@ -120,8 +120,6 @@ public class AdminController {
             int verification = 0;
             for (User element : users){
                 if (element.getUsername().equals(username)) {
-                    System.out.println(element.getUsername());
-                    System.out.println(username);
                     adminView.setActionTargetText("Username taken!");
                     verification = 1;
                 }

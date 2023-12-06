@@ -11,7 +11,16 @@ import service.book.BookService;
 import service.book.*;
 import repository.book.*;
 import view.EmployeeView;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,13 +53,59 @@ public class EmployeeController {
             employeeView.setBooksData(books);
         }
     }
-    private class SellButtonListener implements EventHandler<ActionEvent>{
+    public class SellButtonListener implements EventHandler<ActionEvent> {
+        List<Book> books = new ArrayList<>();
         @Override
-        public void handle(ActionEvent event){
+        public void handle(ActionEvent event) {
             Book selectedBook = employeeView.getSelectedBook();
-            Long newQuantity = (long)selectedBook.getQuantity()-1;
+
+            Long newQuantity = (long) selectedBook.getQuantity() - 1;
             bookService.updateByQuantity(selectedBook.getId(), newQuantity);
+            books.add(selectedBook);
             refreshView();
+
+            // Generate PDF report
+            generatePdfReport(books);
+        }
+
+        private void generatePdfReport(List<Book> books) {
+            try {
+                // Create a PdfWriter object to write to a file
+                PdfWriter writer = new PdfWriter(new FileOutputStream("report.pdf", true));
+
+                // Create a PdfDocument object
+                PdfDocument pdfDocument = new PdfDocument(writer);
+
+                // Create a Document object to add elements to the PDF
+                Document document = new Document(pdfDocument);
+
+                // Add a title to the PDF
+                document.add(new Paragraph("Sold Books Report"));
+
+                // Create a table to display book information
+                Table table = new Table(3);
+                table.addCell("Book ID");
+                table.addCell("Title");
+                table.addCell("Quantity");
+
+                // Add book information to the table
+                for (Book book : books) {
+                    table.addCell(String.valueOf(book.getId()));
+                    table.addCell(book.getTitle());
+                    table.addCell(String.valueOf(1));
+                }
+
+                // Add the table to the document
+                document.add(table);
+
+                // Close the document
+                document.close();
+
+                System.out.println("PDF report generated successfully.");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     private class UpdateButtonListener implements EventHandler<ActionEvent> {

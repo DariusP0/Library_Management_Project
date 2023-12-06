@@ -76,7 +76,7 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
 
     @Override
     public boolean updateEmployee(Long id, String username, String password) {
-        return userRepository.updateEmployee(id,username,hashPassword(password));
+        return userRepository.updateEmployee(id, username, hashPassword(password));
     }
     @Override
     public boolean updateUserRole(Long id, Long role){
